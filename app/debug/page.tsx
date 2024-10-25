@@ -19,15 +19,18 @@ const page = async () => {
   const start = Date.now();
   const normalFetch = await fetch(`${dataUrl}/api/data/1`, {
     next: { revalidate: 120 },
+    cache: "force-cache",
   }).then((d) => d.text());
   const normal = Date.now() - start;
   const wrapped = await testFetch(`${dataUrl}/api/data/2`, {
     next: { revalidate: 120 },
+    cache: "force-cache",
   }).then((d) => d.text());
   const wrappedFetch = Date.now() - start;
 
   const withDebugData = await fetchWithDebugData(`${dataUrl}/api/data/3`, {
     next: { revalidate: 120 },
+    cache: "force-cache",
   }).then((d) => d.text());
   const debugTime = Date.now() - start;
   return (
