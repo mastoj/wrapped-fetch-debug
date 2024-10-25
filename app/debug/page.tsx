@@ -14,29 +14,21 @@ const debugFetch = (baseFetch: WrappedFetch): WrappedFetch => {
 export const dynamic = "force-dynamic";
 const testFetch = debugFetch(fetch);
 
+const dataUrl = process.env.DATA_URL;
 const page = async () => {
   const start = Date.now();
-  const normalFetch = await fetch(
-    "https://jsonplaceholder.typicode.com/todos/1",
-    {
-      next: { revalidate: 120 },
-    }
-  ).then((d) => d.text());
+  const normalFetch = await fetch(`${dataUrl}/api/data/1`, {
+    next: { revalidate: 120 },
+  }).then((d) => d.text());
   const normal = Date.now() - start;
-  const wrapped = await testFetch(
-    "https://jsonplaceholder.typicode.com/todos/2",
-    {
-      next: { revalidate: 120 },
-    }
-  ).then((d) => d.text());
+  const wrapped = await testFetch(`${dataUrl}/api/data/2`, {
+    next: { revalidate: 120 },
+  }).then((d) => d.text());
   const wrappedFetch = Date.now() - start;
 
-  const withDebugData = await fetchWithDebugData(
-    "https://jsonplaceholder.typicode.com/todos/3",
-    {
-      next: { revalidate: 120 },
-    }
-  ).then((d) => d.text());
+  const withDebugData = await fetchWithDebugData(`${dataUrl}/api/data/3`, {
+    next: { revalidate: 120 },
+  }).then((d) => d.text());
   const debugTime = Date.now() - start;
   return (
     <div>
@@ -46,10 +38,14 @@ const page = async () => {
         </code>
       </pre>
       <pre className="my-6 block">
-        <code>{wrapped.length}</code>
+        <code>
+          {wrapped.length} {wrapped}
+        </code>
       </pre>
       <pre className="my-6 block">
-        <code>{withDebugData.length}</code>
+        <code>
+          {withDebugData.length} {withDebugData}
+        </code>
       </pre>
       <div className="flex gap-2">
         <span>Normal: {normal}ms</span>
